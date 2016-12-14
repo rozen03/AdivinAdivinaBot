@@ -40,6 +40,30 @@ def tuvieja(bot, update, groups):
 def repetime(bot, update, groups):
 	texto=groups[1]
 	update.message.reply_text( text=texto)
+global estoEsUnBool
+estoEsUnBool=False
+def decirCosa(bot,job):
+	global estoEsUnBool
+	chat_id, texto = job.context.split("|",1)
+	bot.sendMessage(chat_id=int(chat_id), text=texto)
+	if(estoEsUnBool):
+		job.schedule_removal()
+	else:
+		estoEsUnBool=True
+def decimeEnSegundos(bot, update, groups,job_queue):
+	global estoEsUnBool
+
+	texto=groups[1]
+	try:
+		iniciarEn, repetirEn, texto = texto.split(" ",2)
+		iniciarEn=int(iniciarEn)
+		repetirEn=int(repetirEn)
+		job = Job(decirCosa, repetirEn, repeat=True, context=str(update.message.chat_id)+"|"+texto)
+		job_queue.put(job, next_t=iniciarEn)
+		estoEsUnBool=False
+	except Exception as inst:
+		print(inst)
+		responder(bot,update,text="Pusiste algo mal")
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
 def main():
@@ -47,15 +71,23 @@ def main():
 	try:
 		loguear("Iniciando AdivinaAdivinaBot")
 		print("Iniciando AdivinaAdivinaBot",end="...")
+		botname = "AdivinaAdivinaBot"
 		# Telegram Bot Authorization Token
 		updater = Updater(token=AdivinaAdivinaBottookn)
 		dispatcher = updater.dispatcher
 		j = updater.job_queue
 		start_handler = CommandHandler('start', start)
 		dispatcher.add_handler(start_handler)
+		handlr = RegexHandler("^(?i)/decimeEnSegundos(|@" + botname + ")\s(.*)",
+        		decimeEnSegundos,
+        		pass_groups=True,
+        		pass_groupdict=False,
+        		pass_update_queue=False,
+        		pass_job_queue=True)
+		dispatcher.add_handler(handlr)
+
 		comandos = [('buttonz', buttonz)]
 		comandosArg = [('tuvieja', tuvieja), ('repetime',repetime)]
-		botname = "AdivinaAdivinaBot"
 		for c in comandos:
 			handlearUpperLower(c[0], c[1], dispatcher, botname)
 		for c in comandosArg:
