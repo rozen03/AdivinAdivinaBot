@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+#passwords
+tookns.py
+
+#DataBases
+*.sqlite3
