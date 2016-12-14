@@ -15,6 +15,7 @@ def start(bot, update):
 	update.message.reply_text(text="Holas, soy el AdivinaAdivinaBot, Por que no te vas a la mierda? :D",quote=False)
 
 def buttonz(bot, update):
+	registrar(bot, update)
 	keyboard = [[InlineKeyboardButton("Option 1", callback_data='1'),
                  InlineKeyboardButton("Option 2", callback_data='2')],
                 [InlineKeyboardButton("Option 3", callback_data='3')]]
@@ -32,12 +33,14 @@ def button(bot, update):
 
 
 def tuvieja(bot, update, groups):
+	registrar(bot, update)
 	update.message.reply_text(
             text="[Rozen](telegram.me/Rozzen)",
             disable_web_page_preview=True,
             parse_mode=telegram.ParseMode.MARKDOWN)
 
 def repetime(bot, update, groups):
+	registrar(bot, update)
 	texto=groups[1]
 	update.message.reply_text( text=texto)
 global estoEsUnBool
@@ -52,7 +55,7 @@ def decirCosa(bot,job):
 		estoEsUnBool=True
 def decimeEnSegundos(bot, update, groups,job_queue):
 	global estoEsUnBool
-
+	registrar(bot, update)
 	texto=groups[1]
 	try:
 		iniciarEn, repetirEn, texto = texto.split(" ",2)
