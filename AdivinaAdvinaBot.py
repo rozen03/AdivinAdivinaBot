@@ -9,6 +9,7 @@ from telegram.ext import Job
 from rozentools.commontools import *
 from rozentools.errortools import *
 from tookns import AdivinaAdivinaBottookn
+from random import shuffle
 
 def start(bot, update):
 	registrar(bot, update)
@@ -69,8 +70,8 @@ def decimeEnSegundos(bot, update, groups,job_queue):
 		print(inst)
 		responder(bot,update,text="Pusiste algo mal")
 #----------------------------------------------------------------------------------------------------------------------------------------------
-global juegos  # dicc (key:int, value:[(int,str)])
-juegos= []     #a partir de aca juegos va a ser el diccionario q dije en la linea de arriba
+global juego  # dicc (key:int, value:[(int,str)])
+juego= []     #a partir de aca juegos va a ser el diccionario q dije en la linea de arriba
 def startGame(bot,update):
 	user = getUser(update)
 	group = getGroup(update)
@@ -103,8 +104,18 @@ def personaje(bot,update,groups):
 			juego.append(jugador,texto)
 	tienenTexto= [texto is not None for jugador,texto in juego]
 	if (all(tienenTexto)):
-		
-
+		lista = list(juego)
+		shuffle(lista)
+		l1 = []
+		l2 = []
+		for i in range(len(lista)):
+			l1.append(lista[i][0])
+			l2.append(lista[i][1])
+		primero = l1[0]
+		for i in range(len(l1) - 1):
+			l1[i] = l1[i+1]
+		l1[len(l1)-1] = primero
+		juego = zip(l1, l2)
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
 def main():
