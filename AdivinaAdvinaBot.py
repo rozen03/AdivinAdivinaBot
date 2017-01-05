@@ -70,26 +70,40 @@ def decimeEnSegundos(bot, update, groups,job_queue):
 		responder(bot,update,text="Pusiste algo mal")
 #----------------------------------------------------------------------------------------------------------------------------------------------
 global juegos  # dicc (key:int, value:[(int,str)])
-juegos= {}     #a partir de aca juegos va a ser el diccionario q dije en la linea de arriba
+juegos= []     #a partir de aca juegos va a ser el diccionario q dije en la linea de arriba
 def startGame(bot,update):
 	user = getUser(update)
 	group = getGroup(update)
-	juegos[group.id]=[]
-	juegos[group.id].append(user.id)
+	juegos=[]
+	juegos.append((user.id,None))
 	responder(bot,update,text="asdfasdfasdf despues lo escribimos")
 
 def join(bot,update):
 	user = getUser(update)
 	group = getGroup(update)
-	if user.id in juegos[group.id]:
+	if user.id in juego:
 		return
-	juegos[group.id].append(user.id)
+	juegos.append((user.id,None))
 
 def begin(bot,update):
 	user = getUser(update)
 	group = getGroup(update)
-	for jugador in juegos[group.id]:
+	for jugador,texto in juego:
 		mandarMensaje(bot,jugador,"Pone la cosa")
+
+def personaje(bot,update,groups):
+	user = getUser(update)
+	group = getGroup(update)
+	texto=groups[1]#Tomo el textoju7ju7ju7u89iui
+	i=0
+	while(i < len(juego)):
+		jugador,texto= juego[i]
+		if (jugador == user.id):
+			del (juego[i])
+			juego.append(jugador,texto)
+	tienenTexto= [texto is not None for jugador,texto in juego]
+	if (all(tienenTexto)):
+		
 
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
