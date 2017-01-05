@@ -68,6 +68,29 @@ def decimeEnSegundos(bot, update, groups,job_queue):
 	except Exception as inst:
 		print(inst)
 		responder(bot,update,text="Pusiste algo mal")
+#----------------------------------------------------------------------------------------------------------------------------------------------
+global juegos  # dicc (key:int, value:[(int,str)])
+juegos= {}     #a partir de aca juegos va a ser el diccionario q dije en la linea de arriba
+def startGame(bot,update):
+	user = getUser(update)
+	group = getGroup(update)
+	juegos[group.id]=[]
+	juegos[group.id].append(user.id)
+	responder(bot,update,text="asdfasdfasdf despues lo escribimos")
+
+def join(bot,update):
+	user = getUser(update)
+	group = getGroup(update)
+	if user.id in juegos[group.id]:
+		return
+	juegos[group.id].append(user.id)
+
+def begin(bot,update):
+	user = getUser(update)
+	group = getGroup(update)
+	for jugador in juegos[group.id]:
+		mandarMensaje(bot,jugador,"Pone la cosa")
+
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
 def main():
@@ -90,7 +113,7 @@ def main():
         		pass_job_queue=True)
 		dispatcher.add_handler(handlr)
 
-		comandos = [('buttonz', buttonz)]
+		comandos = [('buttonz', buttonz),('startGame',startGame),('join',join),('begin',begin)]
 		comandosArg = [('tuvieja', tuvieja), ('repetime',repetime)]
 		for c in comandos:
 			handlearUpperLower(c[0], c[1], dispatcher, botname)
