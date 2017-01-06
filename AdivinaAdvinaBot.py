@@ -104,20 +104,17 @@ def personaje(bot,update,groups):
 			juego.append(jugador,texto)
 	tienenTexto= [texto is not None for jugador,texto in juego]
 	if (all(tienenTexto)):
-		lista = list(juego)
-		shuffle(lista)
-		l1 = []
-		l2 = []
-		for i in range(len(lista)):
-			l1.append(lista[i][0])
-			l2.append(lista[i][1])
-		primero = l1[0]
-		for i in range(len(l1) - 1):
-			l1[i] = l1[i+1]
-		l1[-1] = primero
-		juego = zip(l1, l2)
+
+		lista = list(juego)			# ejemplo: lista = [(1, 'uno'), (2, 'dos'), (3, 'tres'), (4, 'cuatro')]
+		shuffle(lista)              # mezclo la lista aleatoriamente
+		lista = list(zip(*lista))   # traspongo la lista (obtengo 2 tuplas, una con los primeros elementos y otra con los segundos:
+		                            #   [(1, 2, 3, 4), ('uno', 'dos', 'tres', 'cuatro')])
+		l1, l2 = map(list, lista)   # convierto las tuplas en listas (aplicando la funcion list() a c/u de los elementos de lista)
+		primero = l1.pop(0)         # elimino el primer elemento de l1 y lo guardo
+		l1.append(primero)          # lo agrego al final (para shiftear l1 en un lugar)
+		juego = list(zip(l1, l2))   # convierto las dos listas en una sola
 		for jugador,texto in juego:
-			mandarMensaje(bot,jugador,str.join('\n',[jugador_+":"+texto_ in juego if jugador_ != jugador]))
+			mandarMensaje(bot,jugador,str.join('\n',[jugador_+":"+texto_ in juego if jugador_ != jugador]))		
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
 def main():
