@@ -114,8 +114,10 @@ def personaje(bot,update,groups):
 		primero = l1[0]
 		for i in range(len(l1) - 1):
 			l1[i] = l1[i+1]
-		l1[len(l1)-1] = primero
+		l1[-1] = primero
 		juego = zip(l1, l2)
+		for jugador,texto in juego:
+			mandarMensaje(bot,jugador,str.join('\n',[jugador_+":"+texto_ in juego if jugador_ != jugador]))
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
 def main():
