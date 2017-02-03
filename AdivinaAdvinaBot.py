@@ -15,82 +15,18 @@ def start(bot, update):
 	registrar(bot, update)
 	update.message.reply_text(text="Holas, soy el AdivinaAdivinaBot, Por que no te vas a la mierda? :D",quote=False)
 
-def buttonz(bot, update):
-	registrar(bot, update)#Logueo el mensaje y el usuario
-	keyboard = [[InlineKeyboardButton("Option 1", callback_data='1'),
-                 InlineKeyboardButton("Option 2", callback_data='2')], #Creo 2 botones en la misma fila tal que al bot les llega un 1 o 2 respectivamente si los apretan
-                [InlineKeyboardButton("Option 3", callback_data='3')]] #Creo otro boton en una nueva fila tal que al bot les llega un 3
-	reply_markup = InlineKeyboardMarkup(keyboard)
-	update.message.reply_text(
-        text="Please choose:",
-        reply_markup=reply_markup)#mando el mensaje con los botones
-
-
 def button(bot, update):
     query = update.callback_query #toma la informacion del boton que se apreto
     bot.editMessageText(text="Selected option: %s" % query.data,
                         chat_id=query.message.chat_id,
                         message_id=query.message.message_id)#edita el mensaje usando la informacion que le llego del boton
 
-
-def tuvieja(bot, update, groups):
-	registrar(bot, update)#Logueo el mensaje y el usuario
-	update.message.reply_text(
-            text="[Rozen](telegram.me/Rozzen)",
-            disable_web_page_preview=True,
-            parse_mode=telegram.ParseMode.MARKDOWN) #respondo un mensaje que linkee al usuario Rozzen sin que se vea su imagen de perfil
-
-def repetime(bot, update, groups):
-	registrar(bot, update)#Logueo el mensaje y el usuario
-	texto=groups[1]#Tomo el texto que ennvio
-	update.message.reply_text( text=texto)#respondo el texto que se envio
-
-global estoEsUnBool
-estoEsUnBool=False
-def decirCosa(bot,job):
-	global estoEsUnBool
-	chat_id, texto = job.context.split("|",1)  #separo el id y el texto
-	bot.sendMessage(chat_id=int(chat_id), text=texto)#Envio el mensaje al id con el texto
-	if(estoEsUnBool):
-		job.schedule_removal() #Saco esta tarea del controlador de tareas y ya no se va a repetir
-	else:
-		estoEsUnBool=True
-def decimeEnSegundos(bot, update, groups,job_queue):
-	global estoEsUnBool
-	registrar(bot, update)#Logueo el mensaje y el usuario
-	texto=groups[1]#Tomo el texto
-	try:
-		iniciarEn, repetirEn, texto = texto.split(" ",2) #Separo los numeros en segundos y el texto
-		iniciarEn=int(iniciarEn)#Paso a int
-		repetirEn=int(repetirEn)#Paso a int
-		job = Job(decirCosa, repetirEn, repeat=True, context=str(update.message.chat_id)+"|"+texto) #Creo la tarea que se va a llamar a futuro mandandole el id y el texto
-		job_queue.put(job, next_t=iniciarEn) #Asigno la tarea al controlador de tareas
-		estoEsUnBool=False #tu vieja
-	except Exception as inst:
-		print(inst)
-		responder(bot,update,text="Pusiste algo mal")
 #----------------------------------------------------------------------------------------------------------------------------------------------
-global juego  # dicc (key:int, value:[(int,str)])
-juego= []     #a partir de aca juegos va a ser el diccionario q dije en la linea de arriba
-def startGame(bot,update):
-	user = getUser(update)
-	group = getGroup(update)
-	juegos=[]
-	juegos.append((user.id,None))
-	responder(bot,update,text="asdfasdfasdf despues lo escribimos")
-
-def join(bot,update):
-	user = getUser(update)
-	group = getGroup(update)
-	if user.id in juego:
-		return
-	juegos.append((user.id,None))
-
-def begin(bot,update):
-	user = getUser(update)
-	group = getGroup(update)
-	for jugador,texto in juego:
-		mandarMensaje(bot,jugador,"Pone la cosa")
+@db_session
+def startGame(bot, update):
+	usuario, grupo = registrar(bot, update)
+	juego = Juego(grupo=grupo)
+	jugador = Jugador()
 
 def personaje(bot,update,groups):
 	user = getUser(update)
