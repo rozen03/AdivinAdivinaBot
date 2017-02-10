@@ -8,3 +8,5 @@ class Juego(db.Entity):
 class Jugador(User):
 	personajeAsignado = Optional(str)
 	personajePropuesto = Optional(str)
+	usuario = Required(User)
+	juego = Required(Grupo)
