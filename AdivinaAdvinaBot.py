@@ -12,6 +12,7 @@ from tookns import AdivinaAdivinaBottookn
 from random import shuffle
 from defines import *
 from classes import *
+from game	import *
 def start(bot, update):
 	registrar(bot, update)
 	update.message.reply_text(text="Holas, soy el AdivinaAdivinaBot, Por que no te vas a la mierda? :D",quote=False)
@@ -24,52 +25,38 @@ def button(bot, update):
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
 
-@db_session
-def join(user, group):
-	jugador = Jugador.get(user=user,group=group)
-	res = NOTHING
-	if (not jugador):
-		jugador = Jugador(user=user,group=group)
-	juego = Juego.get(group=group)
-	if (jugador not in juego.jugadores):
-		juego.jugadores.add(jugador)
-		res = JOINED
-	return res
-@db_session
-def startGame(user, group):
-	juego = Juego.get(group=group)
-	res = NOTHING
-	if (not juego ):
-		juego = Juego(group=group)
-		res=STARTED
-	commit()
-	resTwo=join(user, group)
-	if(res == NOTHING):
-		res= resTwo
-	return res
+def newGame_command(bot,update):
+	with db_session:
+		user, group = registrar(bot, update)
+		res = newGame(user,group)
+		text=""
+		if(res ==NOTHING):
+			text= "Ya hay un juego creado y ya estas adentro, IDIOTA!"
+		else:
+			if(res==STARTED):
+				text="Una nueva partida ha sido creada, pone /join para unirte\n"
+			text+=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
+	responder(bot,update,text)
 
-@db_session
-def startGame_command(bot,update):
-	user, group = registrar(bot, update)
-	res = startGame(user,group)
-	text=""
-	if(res ==NOTHING):
-		text= "Ya hay un juego creado y ya estas adentro, IDIOTA!"
-	else:
-		if(res==STARTED):
-			text="Una nueva partida ha sido creada, pone /join para unirte\n"
-		text+=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
-	responder(bot,update,text)
-@db_session
 def join_command(bot,update):
-	user, group = registrar(bot, update)
-	res = join(user,group)
-	text=""
-	if(res ==NOTHING):
-		text= "Ya hay un juego creado  y ya estas adentro, IDIOTA! ... o no hay un juego creado"
-	else:
-		text=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
+	with db_session:
+		user, group = registrar(bot, update)
+		res = join(user,group)
+		text=""
+		if(res ==NOTHING):
+			text= "Ya hay un juego creado  y ya estas adentro, IDIOTA! ... o no hay un juego creado"
+		else:
+			text=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
 	responder(bot,update,text)
+
+def startGame_command(bot,update):
+	with db_session:
+		user, group = registrar(bot, update)
+		usersId= startGame(group)
+	for userId in usersId:
+		mandarMensaje(bot,userId, "Eh wacho tirame la palabra (Pero no te voy a responder nada ni hacer nada con eso, MWAHAHA)")
+
+
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
 def main():
@@ -84,12 +71,8 @@ def main():
 		j = updater.job_queue
 		start_handler = CommandHandler('start', start)
 		dispatcher.add_handler(start_handler)
-
-
-		#comandos = [('buttonz', buttonz),('startGame',startGame),('join',join),('begin',begin)]
-		comandos=[("startGame", startGame_command),("join",join_command)]
+		comandos=[("newGame", newGame_command),("join",join_command),("startGame", startGame_command),]
 		comandosArg=[]
-		#comandosArg = [('tuvieja', tuvieja), ('repetime',repetime)]
 		for c in comandos:
 			handlearUpperLower(c[0], c[1], dispatcher, botname)
 		for c in comandosArg:
