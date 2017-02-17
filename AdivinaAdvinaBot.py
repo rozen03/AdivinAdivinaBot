@@ -10,7 +10,7 @@ from rozentools.commontools import *
 from rozentools.errortools import *
 from tookns import AdivinaAdivinaBottookn
 from random import shuffle
-NOTHING, STARTED, JOINED = range(2)
+from defines import *
 def start(bot, update):
 	registrar(bot, update)
 	update.message.reply_text(text="Holas, soy el AdivinaAdivinaBot, Por que no te vas a la mierda? :D",quote=False)
@@ -22,27 +22,30 @@ def button(bot, update):
                         message_id=query.message.message_id)#edita el mensaje usando la informacion que le llego del boton
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
-@db_session
-def startGame(bot, update):
-	usuario, grupo = registrar(bot, update)
-	juego = Juego(grupo=grupo)
-	jugador = Jugador()
 
 @db_session
-def join(bot, update):
+def join(usuario, grupo):
 	usuario, grupo = registrar(bot, update)
 	jugador = Jugador.get(user=usuario,grupo=grupo)
+	res = NOTHING
 	if (jugador is None):
 		jugador = Jugador(usuario=usuario,grupo=grupo)
 	juego = Juego.get(grupo=grupo)
 	if (jugador not in juego.jugadores)
 		juego.jugadores.add(jugador)
-		return JOINED
-def iniciarJuego(usuario, grupo):
+		res = JOINED
+	return res
+@db_session
+def startGame(usuario, grupo):
 	juego = Juego.get(grupo=grupo)
+	res = NOTHING
 	if (juego is None):
 		juego = Juego(grupo=grupo)
-	join(usuario, grupo)
+		res=STARTED
+	resTwo=join(usuario, grupo)
+	if(res == NOTHING):
+		res= resTwo
+	return res
 
 def startGame(bot,update):
 	user, group = registrar(bot, update)
