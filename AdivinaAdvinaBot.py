@@ -11,6 +11,7 @@ from rozentools.errortools import *
 from tookns import AdivinaAdivinaBottookn
 from random import shuffle
 from defines import *
+from classes import *
 def start(bot, update):
 	registrar(bot, update)
 	update.message.reply_text(text="Holas, soy el AdivinaAdivinaBot, Por que no te vas a la mierda? :D",quote=False)
@@ -24,32 +25,51 @@ def button(bot, update):
 #----------------------------------------------------------------------------------------------------------------------------------------------
 
 @db_session
-def join(usuario, grupo):
-	usuario, grupo = registrar(bot, update)
-	jugador = Jugador.get(user=usuario,grupo=grupo)
+def join(user, group):
+	jugador = Jugador.get(user=user,group=group)
 	res = NOTHING
-	if (jugador is None):
-		jugador = Jugador(usuario=usuario,grupo=grupo)
-	juego = Juego.get(grupo=grupo)
-	if (jugador not in juego.jugadores)
+	if (not jugador):
+		jugador = Jugador(user=user,group=group)
+	juego = Juego.get(group=group)
+	if (jugador not in juego.jugadores):
 		juego.jugadores.add(jugador)
 		res = JOINED
 	return res
 @db_session
-def startGame(usuario, grupo):
-	juego = Juego.get(grupo=grupo)
+def startGame(user, group):
+	juego = Juego.get(group=group)
 	res = NOTHING
-	if (juego is None):
-		juego = Juego(grupo=grupo)
+	if (not juego ):
+		juego = Juego(group=group)
 		res=STARTED
-	resTwo=join(usuario, grupo)
+	commit()
+	resTwo=join(user, group)
 	if(res == NOTHING):
 		res= resTwo
 	return res
 
-def startGame(bot,update):
+@db_session
+def startGame_command(bot,update):
 	user, group = registrar(bot, update)
-
+	res = startGame(user,group)
+	text=""
+	if(res ==NOTHING):
+		text= "Ya hay un juego creado y ya estas adentro, IDIOTA!"
+	else:
+		if(res==STARTED):
+			text="Una nueva partida ha sido creada, pone /join para unirte\n"
+		text+=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
+	responder(bot,update,text)
+@db_session
+def join_command(bot,update):
+	user, group = registrar(bot, update)
+	res = join(user,group)
+	text=""
+	if(res ==NOTHING):
+		text= "Ya hay un juego creado  y ya estas adentro, IDIOTA! ... o no hay un juego creado"
+	else:
+		text=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
+	responder(bot,update,text)
 
 #NOTA: Desde esta parte del codigo no le den mucha bola si quieren, esto inicializa un monton de cosas
 def main():
@@ -64,16 +84,12 @@ def main():
 		j = updater.job_queue
 		start_handler = CommandHandler('start', start)
 		dispatcher.add_handler(start_handler)
-		handlr = RegexHandler("^(?i)/decimeEnSegundos(|@" + botname + ")\s(.*)",
-        		decimeEnSegundos,
-        		pass_groups=True,
-        		pass_groupdict=False,
-        		pass_update_queue=False,
-        		pass_job_queue=True)
-		dispatcher.add_handler(handlr)
 
-		comandos = [('buttonz', buttonz),('startGame',startGame),('join',join),('begin',begin)]
-		comandosArg = [('tuvieja', tuvieja), ('repetime',repetime)]
+
+		#comandos = [('buttonz', buttonz),('startGame',startGame),('join',join),('begin',begin)]
+		comandos=[("startGame", startGame_command),("join",join_command)]
+		comandosArg=[]
+		#comandosArg = [('tuvieja', tuvieja), ('repetime',repetime)]
 		for c in comandos:
 			handlearUpperLower(c[0], c[1], dispatcher, botname)
 		for c in comandosArg:

@@ -3,16 +3,17 @@ from rozentools.user import *
 
 class Juego(db.Entity):
 	jugadores = Set("Jugador")
-	grupo = Required(Grupo)
+	group = Required(Group)
 
-class Jugador(User):
+class Jugador(db.Entity):
 	personajeAsignado = Optional(str)
 	personajePropuesto = Optional(str)
-	usuario = Required(User)
-	juego = Required(Grupo)
+	user = Required(User)
+	group = Required(Group)
+	juegos = Set("Juego")
 
 db.bind('sqlite',
-		'../bots.sqlite3',
+		'bots.sqlite3',
 		 create_db=True
 		 )
 db.generate_mapping(create_tables=True)
