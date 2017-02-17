@@ -32,11 +32,11 @@ def newGame_command(bot,update):
 		res = newGame(user,group)
 		text=""
 		if(res ==NOTHING):
-			text= "Ya hay un juego creado y ya estas adentro, IDIOTA!"
+			text= "Ya hay un juego creado y estás adentro, IDIOTA!"
 		else:
 			if(res==STARTED):
 				text="Una nueva partida ha sido creada, pone /join para unirte\n"
-			text+=user.first_name+" "+user.last_name+ "se ha unido a la partida"
+			text+=user.first_name+" "+user.last_name+ " se ha unido a la partida"
 	responder(bot,update,text)
 
 def join_command(bot,update):
@@ -45,9 +45,9 @@ def join_command(bot,update):
 		res = join(user,group)
 		text=""
 		if(res ==NOTHING):
-			text= "Ya hay un juego creado  y ya estas adentro, IDIOTA! ... o no hay un juego creado xD"
+			text= "Ya hay un juego creado  y estás adentro, IDIOTA! ... o no hay un juego creado xD"
 		else:
-			text=user.first_name+" "+user.last_name+ "se ha unido a la partida"
+			text=user.first_name+" "+user.last_name+ " se ha unido a la partida"
 	responder(bot,update,text)
 
 def startGame_command(bot,update):
