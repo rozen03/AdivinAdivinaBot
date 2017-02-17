@@ -120,16 +120,10 @@ class Remind(db.Entity):
 	text = Required(str)
 	enabled = Required(bool, default=False)
 
-class Jugador(db.Entity):
+class Jugadorr(db.Entity):
     nombre = Required(str)
     cantidad = Required(int, default=0)
 class File(db.Entity):
     pathName=Required(str)
     file_id=Required(str)
     botId=Required(int)
-
-db.bind('sqlite',
-		'../bots.sqlite3',
-		 create_db=True
-		 )
-db.generate_mapping(create_tables=True)

@@ -10,3 +10,9 @@ class Jugador(User):
 	personajePropuesto = Optional(str)
 	usuario = Required(User)
 	juego = Required(Grupo)
+
+db.bind('sqlite',
+		'../bots.sqlite3',
+		 create_db=True
+		 )
+db.generate_mapping(create_tables=True)
