@@ -25,6 +25,7 @@ def button(bot, update):
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
 
+
 def newGame_command(bot,update):
 	with db_session:
 		user, group = registrar(bot, update)
@@ -44,9 +45,9 @@ def join_command(bot,update):
 		res = join(user,group)
 		text=""
 		if(res ==NOTHING):
-			text= "Ya hay un juego creado  y ya estas adentro, IDIOTA! ... o no hay un juego creado"
+			text= "Ya hay un juego creado  y ya estas adentro, IDIOTA! ... o no hay un juego creado xD"
 		else:
-			text=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
+			text=user.first_name+" "+user.last_name+ "se ha unido a la partida"
 	responder(bot,update,text)
 
 def startGame_command(bot,update):
