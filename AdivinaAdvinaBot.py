@@ -36,7 +36,7 @@ def newGame_command(bot,update):
 		else:
 			if(res==STARTED):
 				text="Una nueva partida ha sido creada, pone /join para unirte\n"
-			text+=user.first_name+" "+user.last_name+ "Se ha unido a la partida"
+			text+=user.first_name+" "+user.last_name+ "se ha unido a la partida"
 	responder(bot,update,text)
 
 def join_command(bot,update):
@@ -63,9 +63,9 @@ def startGame_command(bot,update):
 def main():
 	global update_id
 	try:
-		loguear("Iniciando AdivinaAdivinaBot")
-		print("Iniciando AdivinaAdivinaBot",end="...")
-		botname = "AdivinaAdivinaBot"
+		loguear("Iniciando AdivinAdivinaBot")
+		print("Iniciando AdivinAdivinaBot",end="...")
+		botname = "AdivinAdivinaBot"
 		# Telegram Bot Authorization Token
 		updater = Updater(token=AdivinaAdivinaBottookn)
 		dispatcher = updater.dispatcher
@@ -91,8 +91,8 @@ def main():
 		print("OK")
 	except Exception as inst:
 		print("FAIL")
-		print("ERROR AL INICIAR EL AdivinaAdivinaBot")
-		loguear("ERROR AL INICIAR EL AdivinaAdivinaBot")
+		print("ERROR AL INICIAR EL AdivinAdivinaBot")
+		loguear("ERROR AL INICIAR EL AdivinAdivinaBot")
 		result = str(type(inst)) + "\n"    	# the exception instance
 		result += str(inst.args) + "\n"     # arguments stored in .args
 		# __str__ allows args to be printed directly,
